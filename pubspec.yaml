@@ -34,26 +34,21 @@ dependencies:
   blurrycontainer: ^1.0.2
   cupertino_icons: ^1.0.2
   custom_date_range_picker: ^1.0.10
-  fl_chart: ^0.61.0
   flutter:
     sdk: flutter
   flutter_bounceable: ^1.1.0
   flutter_flushbar: ^0.0.2
   flutter_launcher_icons: ^0.12.0
   flutter_screenutil: ^5.6.1
-  flutter_svg: ^2.0.2
   flutter_time_picker_spinner: ^2.0.0
-  google_fonts: ^4.0.3
-  google_nav_bar: ^5.0.6
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   intl: ^0.18.0
-  liquid_progress_indicator: ^0.4.0
-  lottie: ^2.2.0
   numberpicker: ^2.1.1
   path_provider: ^2.0.13
+  percent_indicator: ^4.2.3
+  provider: ^6.0.5
   quickalert: ^1.0.1
-  rive: ^0.10.2
   share_plus: ^6.3.1
   smooth_page_indicator: ^1.0.1
   syncfusion_flutter_charts: ^20.4.54
@@ -65,6 +60,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   hive_generator: ^2.0.0
+ 
 
 flutter_icons:
   image_path: "lib/assets/images/app_log0.png"
@@ -97,7 +93,7 @@ flutter:
     - lib/assets/images/output-onlinegiftools(4).gif
     - lib/assets/images/gradientbb.gif
     - lib/assets/images/water_logo-removebg-preview.png
-    - lib/assets/images/no-data.gif
+    - lib/assets/images/no_data.gif
     - lib/assets/images/water goal.gif
     - lib/assets/images/app_log0.png
   #   - images/a_dot_ham.jpeg

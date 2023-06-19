@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hive_flutter/adapters.dart';
+import 'package:provider/provider.dart';
+import 'package:water_reminder/views/dialogs/notification/notification.dart';
 
 import '../../../models/hive_services/data_model.dart';
+import '../../../provider/water_provider.dart';
 import '../../../utils/water_tile.dart';
 import 'package:blurrycontainer/blurrycontainer.dart';
-
-import 'grap_notifier_function.dart';
 
 class WaterListView extends StatefulWidget {
   const WaterListView({super.key});
@@ -18,18 +18,18 @@ class WaterListView extends StatefulWidget {
 class _WaterListViewState extends State<WaterListView> {
   @override
   void initState() {
-    Drinkbox.getdata();
+    context.read<WaterProvider>().waterGetData;
     super.initState();
   }
 
   bool startAnimation = false;
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<Box<Drinkbox>>(
+    return Consumer<WaterProvider>(
       // listens to changes to a Hive box and rebuilds the UI accordingly.
-      valueListenable: Drinkbox.getdata()
-          .listenable(), // The box that the widget listens to changes for.
-      builder: (context, box, _) {
+
+      builder: (context, waterProvider, _) {
+        final box = Drinkbox.getdata();
         final today = DateTime.now(); // Get the current date and time.
         final data1 = box.values
             .where(
@@ -55,18 +55,17 @@ class _WaterListViewState extends State<WaterListView> {
                   reverse: true,
                   itemCount: data1.length,
                   itemBuilder: (context, index) {
-                    return Dismissible(
-                      onDismissed: (direction) async {
+                    return GestureDetector(
+                      onLongPressStart: (direction) {
                         // Remove the item from the list
+                        showAlert(context, index,data1);
 
-                        await Drinkbox.getdata().deleteAt(index);
-                        await grap(Drinkbox.getdata(), DateTime.now());
                       },
                       key: UniqueKey(),
                       child: BlurryContainer(
                         borderRadius: BorderRadius.circular(30),
                         width: double.infinity,
-                        height: 68.h,
+                        height: 70.h,
                         color: const Color(0xFF35BAFF).withOpacity(0.8),
                         blur: 1,
                         elevation: 2,
@@ -88,9 +87,9 @@ class _WaterListViewState extends State<WaterListView> {
     //  if there is no data on that current date it wil show this image
     return Container(
       alignment: Alignment.center,
-      child: Row(
+      child: const Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
+        children: [
           Icon(Icons.hourglass_empty_rounded),
           Center(
               child: Text(

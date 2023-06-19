@@ -80,7 +80,11 @@ class MedCompleted extends HiveObject {
   final DateTime date;
 
   MedCompleted(
-      this.medicinename, this.reason, this.category, this.medTime, this.date);
+      {required this.medicinename,
+      required this.reason,
+      required this.category,
+      required this.medTime,
+      required this.date});
 
   static Box<MedCompleted> getdata() => Hive.box<MedCompleted>('MedCompleted');
 }

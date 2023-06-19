@@ -1,18 +1,14 @@
 import 'dart:developer';
-
 import 'package:blurrycontainer/blurrycontainer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
-import 'package:quickalert/widgets/quickalert_dialog.dart';
-
+import 'package:water_reminder/provider/medicine_provider.dart';
 import '../../../models/hive_services/data_model.dart';
 
-
-
 class Search extends SearchDelegate {
-  
   // Get data from the MedicinesAdd and MedCompleted database
 
   List<MedicinesAdd> allData = MedicinesAdd.getdata().values.toList();
@@ -70,11 +66,10 @@ class Search extends SearchDelegate {
         completedMatchQuery.add(item);
       }
     }
-   
+
     // Return either a loader or the search results
     return (matchQuery.isEmpty && completedMatchQuery.isEmpty)
-        ? Center(
-            child: Image.asset(''))
+        ? const Center(child: Text('is empty'))
         : ListView.separated(
             separatorBuilder: (context, index) => const SizedBox(
               height: 10,
@@ -87,7 +82,6 @@ class Search extends SearchDelegate {
               if (index < matchQuery.length) {
                 var result = matchQuery[index];
 
-             
                 //If the condition is true, it means that the current item being built
                 //in the ListView.builder corresponds to an item in the matchQuery list,
                 // so it extracts the corresponding MedicinesAdd object from the matchQuery
@@ -96,7 +90,7 @@ class Search extends SearchDelegate {
                     borderRadius: BorderRadius.circular(30),
                     width: double.infinity,
                     height: 68.h,
-                    color: Colors.white,
+                    color: Colors.green.withOpacity(0.5),
                     blur: 1,
                     elevation: 2,
                     child: Padding(
@@ -105,15 +99,31 @@ class Search extends SearchDelegate {
                         leading: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(result.medicinename),
-                            Text(result.reason),
+                            Text(result.medicinename,
+                                style: const TextStyle(
+                                   color: Colors.white,
+                                  fontSize: 18,
+                                )),
+                            Text(result.reason,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 17,
+                                )),
                           ],
                         ),
                         trailing: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(result.medTime),
+                            Text(result.medTime,
+                                style: const TextStyle(
+                                   color: Colors.white,
+                                  fontSize: 15,
+                                )),
                             Text(
+                              style: const TextStyle(
+                                 color: Colors.white,
+                                fontSize: 15,
+                              ),
                               DateFormat("MMMM d").format(result.date),
                             ),
                           ],
@@ -132,19 +142,36 @@ class Search extends SearchDelegate {
                     borderRadius: BorderRadius.circular(30),
                     width: double.infinity,
                     height: 68.h,
-                    color: Colors.white,
+                    color: Colors.green.withOpacity(0.5),
                     blur: 1,
                     elevation: 2,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: ListTile(
-                        title: Text(completedResult.reason),
-                        subtitle:  Text(completedResult.medicinename),
+                        title: Text(completedResult.reason,
+                            style: const TextStyle(
+                               color: Colors.white,
+                              fontSize: 18,
+                            )),
+                        subtitle: Text(completedResult.medicinename,
+                            style: const TextStyle(
+                               color: Colors.white,
+                              fontSize: 16,
+                            )),
                         trailing: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Text(completedResult.medTime),
                             Text(
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                   color: Colors.white,
+                                ),
+                                completedResult.medTime),
+                            Text(
+                              style: const TextStyle(
+                                fontSize: 15,
+                                 color: Colors.white,
+                              ),
                               DateFormat("MMMM d").format(completedResult.date),
                             ),
                           ],
@@ -181,8 +208,7 @@ class Search extends SearchDelegate {
 
     // Return either a loader or the search results
     return (matchQuery.isEmpty && completedMatchQuery.isEmpty)
-        ? Center(
-            child: Image.asset('lib/assets/images/107420-no-data-loader.gif'))
+        ? const Center(child: Text('is empty'))
         : ListView.separated(
             separatorBuilder: (context, index) => const SizedBox(
               height: 10,
@@ -192,12 +218,12 @@ class Search extends SearchDelegate {
               if (index < matchQuery.length) {
                 var result = matchQuery[index];
 
-                    ValueNotifier<bool> clickToComplete=ValueNotifier(result.isCompleted);
+                bool clickToComplete = result.isCompleted;
                 return BlurryContainer(
                     borderRadius: BorderRadius.circular(30),
                     width: double.infinity,
                     height: 68.h,
-                    color: Colors.white,
+                    color: Colors.green.withOpacity(0.5),
                     blur: 1,
                     elevation: 2,
                     child: Padding(
@@ -206,71 +232,74 @@ class Search extends SearchDelegate {
                         leading: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(result.medicinename),
-                            Text(result.reason)
+                            Text(result.medicinename,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                   color: Colors.white,
+                                )),
+                            Text(result.reason,
+                                style: const TextStyle(
+                                  fontSize: 17,
+                                   color: Colors.white,
+                                ))
                           ],
                         ),
-                        subtitle: ValueListenableBuilder(
-                          valueListenable: clickToComplete,
-                          builder: (context,box,_) {
-                            return Checkbox(
-                              value: result.isCompleted,
-                              onChanged: (value) {
-                                if (value!) {
-                                  log('chekbox is taped');
+                        subtitle: Consumer<MedicineProvider>(
+                            builder: (context, medicineProvider, _) {
+                          return Checkbox(
+                            value: clickToComplete,
+                            onChanged: (value) {
+                              clickToComplete = value!;
+                              if (value == true) {
+                                log('chekbox is taped');
 
-                                  QuickAlert.show(
-                                    onCancelBtnTap: () {
-                                      Navigator.of(context).pop();
-                                      box=false;
-                                        clickToComplete.value = !clickToComplete.value;
-                                        clickToComplete.notifyListeners();
-                                    },
-                                    onConfirmBtnTap: ()async {
-                                   
-                                      box=false;
-                                      clickToComplete.value = !clickToComplete.value;
-                                    clickToComplete.notifyListeners();
-                                     result.isCompleted = true;
-                                        // here we are deleting and storing
-                                        // the data when user click on check box
-                                        // it marked has completed medicine
-                                        // and we will delete that data and store to
-                                        // another filed called MedCompleted the reason
-                                        // we are storing the data because we want to
-                                        // show the completed data in history
-                                      MedCompleted med =   await MedCompleted(
-                                          result.medicinename,
-                                          result.reason,
-                                          result.category,
-                                          result.medTime,
-                                          result.date,
-                                        );
-                                        MedCompleted.getdata().add(med);
-                                        med.save();
+                                QuickAlert.show(
+                                  onCancelBtnTap: () {
+                                    Navigator.of(context).pop();
+                                    value = false;
+                                  },
+                                  onConfirmBtnTap: () async {
+                                    value = false;
+                                    Navigator.of(context).pop();
+                                    // here we are deleting and storing
+                                    // the data when user click on check box
+                                    // it marked has completed medicine
+                                    // and we will delete that data and store to
+                                    // another filed called MedCompleted the reason
+                                    // we are storing the data because we want to
+                                    // show the completed data in history
+                                    context
+                                        .read<MedicineProvider>()
+                                        .medCompleted(
+                                            medicineName: result.medicinename,
+                                            reason: result.reason,
+                                            category: result.category,
+                                            medTime: result.medTime,
+                                            medDate: result.date);
 
-                                      await matchQuery[index].delete();
-                                         Navigator.of(context).pop();
-                                    },
-                                    context: context,
-                                    type: QuickAlertType.confirm,
-                                    title: 'Are you sure you complete Medicine?',
-                                  );
-                                } else {
-                                  box=false;
-                                    clickToComplete.value = !clickToComplete.value;
-                                    clickToComplete.notifyListeners();
-                                }
-                              },
-                            );
-                          }
-                        ),
+                                    await matchQuery[index].delete();
+                                  },
+                                  context: context,
+                                  type: QuickAlertType.confirm,
+                                  title: 'Are you sure you complete Medicine?',
+                                );
+                              }
+                            },
+                          );
+                        }),
                         trailing: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(result.medTime),
+                            Text(result.medTime,
+                                style: const TextStyle(fontSize: 15,
+                                 color: Colors.white,
+                                )),
                             Text(
                               DateFormat("MMMM d").format(result.date),
+                              style: const TextStyle(
+                                fontSize: 15,
+                                 color: Colors.white,
+                              ),
                             ),
                           ],
                         ),
@@ -283,20 +312,28 @@ class Search extends SearchDelegate {
                     borderRadius: BorderRadius.circular(30),
                     width: double.infinity,
                     height: 68.h,
-                    color: Colors.white,
+                    color: Colors.green.withOpacity(0.5),
                     blur: 1,
                     elevation: 2,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: ListTile(
-                        title: Text(completedResult.medicinename),
-                        subtitle:  Text(completedResult.reason),
+                        title: Text(completedResult.medicinename,
+                            style: const TextStyle(fontSize: 18,
+                             color: Colors.white,)),
+                        subtitle: Text(completedResult.reason,
+                            style: const TextStyle(fontSize: 18,
+                             color: Colors.white,)),
                         trailing: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Text(completedResult.medTime),
+                            Text(completedResult.medTime,
+                                style: const TextStyle(fontSize: 15,
+                                 color: Colors.white,)),
                             Text(
                               DateFormat("MMMM d").format(completedResult.date),
+                              style: const TextStyle(fontSize: 15,
+                               color: Colors.white,),
                             ),
                           ],
                         ),

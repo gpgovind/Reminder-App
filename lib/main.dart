@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:water_reminder/models/hive_services/data_model.dart';
+import 'package:water_reminder/provider/medicine_provider.dart';
+import 'package:water_reminder/provider/water_provider.dart';
 import 'views/pages/flash and skip screen/first_page.dart';
 import 'package:hive/hive.dart';
 
@@ -30,7 +33,10 @@ Future<void> main() async {
   Hive.registerAdapter(IndicatorValueAdapter());
   await Hive.openBox<IndicatorValue>('IndicatorBox');
 
-  runApp(const MyApp());
+  runApp(
+    const MyApp()
+  
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -41,14 +47,21 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  
   @override
   Widget build(BuildContext context) {
-    return ScreenUtilInit(
+    return    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => WaterProvider()),
+        ChangeNotifierProvider(create: (_) => MedicineProvider()),
+      ],
+    child : ScreenUtilInit(
       builder: (context, child) => MaterialApp(
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(useMaterial3: true),
         home: const FlashScreen(),
       ),
       designSize:ScreenUtil.defaultSize,
-    );
+    ));
   }
 }

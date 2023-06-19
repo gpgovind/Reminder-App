@@ -1,16 +1,17 @@
-import 'dart:developer';
+
 import 'package:blurrycontainer/blurrycontainer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
-import 'package:water_reminder/views/widgets/water%20screen%20data/grap_notifier_function.dart';
-import '../../../models/hive_services/data_model.dart';
+import 'package:provider/provider.dart';
+import 'package:water_reminder/consts/color.dart';
+import '../../../provider/water_provider.dart';
 import '../../dialogs/notification/notification.dart';
 import '../../widgets/animated icon.dart/animatd_icon1.dart';
 import '../../widgets/water screen data/water_listview_builder.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
-ValueNotifier<double> liquidTotal = ValueNotifier<double>(0);
+// ValueNotifier<double>  = ValueNotifier<double>(0);
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,12 +21,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // ignore: prefer_final_fields
-  @override
+@override
   void initState() {
-    WidgetsFlutterBinding.ensureInitialized();
-    IndicatorValue.getdata();
-    grap(Drinkbox.getdata(), DateTime.now());
+    // TODO: implement initState
+    context.read<WaterProvider>().waterGetData;
     super.initState();
   }
 
@@ -41,15 +40,11 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 200,
               width: 200,
               alignment: Alignment.center,
-              child: ValueListenableBuilder(
-                  valueListenable: liquidTotal,
-                  builder: (context, value, child) {
-                    log('${value.toString()} ml');
-
-                    if (value > 0.95) {
-                      return Column(
+              child: Consumer<WaterProvider>(builder: (context, value, child) {
+                return (value.getIndicatorValue() > 0.95)
+                    ? const Column(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
+                        children: [
                           Center(
                             child: Icon(
                               Icons.check_circle_outline,
@@ -65,16 +60,15 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                         ],
-                      );
-                    } else {
-                      return LiquidCircularProgressIndicator(
-                        value: value,
-                        valueColor:
-                            const AlwaysStoppedAnimation(Color(0xFF35BAFF)),
-                        backgroundColor: const Color(0xFFFFFFFF),
-                        borderColor: Colors.white,
-                        borderWidth: 6,
-                        direction: Axis.vertical,
+                      )
+                    : CircularPercentIndicator(
+                        backgroundColor: indicatorBackgroundColor,
+                        progressColor: progressColor,
+                        animation: true,
+                        animationDuration: 1200,
+                        radius: 99.0,
+                        lineWidth: 10,
+                        percent: value.getIndicatorValue(),
                         center: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -89,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               height: 15.h,
                             ),
                             Text(
-                              '${Watergoal.getdata().get(0)?.addgoal.toString()} ml',
+                              "${WaterProvider().displayGoal().toString()} ml",
                               style: TextStyle(
                                   fontSize: 17.sp, fontWeight: FontWeight.w500),
                             ),
@@ -99,8 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                       );
-                    }
-                  }),
+              }),
             ),
           ),
           Stack(
@@ -119,49 +112,64 @@ class _HomeScreenState extends State<HomeScreen> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Container(
-                         alignment: Alignment.centerRight,
-                            width: 280,
-                        height: 40,
+                          alignment: Alignment.centerRight,
+                          width: 280,
+                          height: 40,
                           child: Center(
                             child: AnimatedTextKit(
                                 pause: const Duration(seconds: 3),
                                 repeatForever: true,
                                 isRepeatingAnimation: true,
                                 animatedTexts: [
-                                  TyperAnimatedText('Stay refreshed and energized',
+                                  TyperAnimatedText(
+                                      'Stay refreshed and energized',
                                       textStyle: const TextStyle(
-                                          fontWeight: FontWeight.w500, fontSize: 16)),
-                                  TyperAnimatedText('Stay on track with medicine',
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16)),
+                                  TyperAnimatedText(
+                                      'Stay on track with medicine',
                                       textStyle: const TextStyle(
-                                          fontWeight: FontWeight.w500, fontSize: 16)),
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16)),
                                   TyperAnimatedText('Drink more water',
                                       textStyle: const TextStyle(
-                                          fontWeight: FontWeight.w500, fontSize: 16)),
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16)),
                                   TyperAnimatedText('Keep yourself hydrated',
                                       textStyle: const TextStyle(
-                                          fontWeight: FontWeight.w500, fontSize: 16)),
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16)),
                                   TyperAnimatedText('Water is important',
                                       textStyle: const TextStyle(
-                                          fontWeight: FontWeight.w500, fontSize: 16)),
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16)),
                                   TyperAnimatedText(
                                       'Stay healthy, take your medicine.',
                                       textStyle: const TextStyle(
-                                          fontWeight: FontWeight.w500, fontSize: 16)),
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16)),
                                   TyperAnimatedText('Thirsty? Drink up!',
                                       textStyle: const TextStyle(
-                                          fontWeight: FontWeight.w500, fontSize: 16)),
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16)),
                                   TyperAnimatedText('Add medicine',
                                       textStyle: const TextStyle(
-                                          fontWeight: FontWeight.w500, fontSize: 16)),
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16)),
                                   TyperAnimatedText('Drink up, stay cool.',
                                       textStyle: const TextStyle(
-                                          fontWeight: FontWeight.w500, fontSize: 16)),
-                                  TyperAnimatedText('Health starts with hydration',
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16)),
+                                  TyperAnimatedText(
+                                      'Health starts with hydration',
                                       textStyle: const TextStyle(
-                                          fontWeight: FontWeight.w500, fontSize: 16)),
-                                  TyperAnimatedText("Don't forget to add drink ",
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16)),
+                                  TyperAnimatedText(
+                                      "Don't forget to add drink ",
                                       textStyle: const TextStyle(
-                                          fontWeight: FontWeight.w500, fontSize: 16))
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16))
                                 ]),
                           ),
                         ),

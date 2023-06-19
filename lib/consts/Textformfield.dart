@@ -1,13 +1,24 @@
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
-class TextFormFieldRewrite extends StatelessWidget {
+class TextFormFieldRewrite extends StatefulWidget {
   // ignore: prefer_typing_uninitialized_variables
   var controller;
   final String hintText;
 
   TextFormFieldRewrite(
       {super.key, required this.controller, required this.hintText});
+
+  @override
+  State<TextFormFieldRewrite> createState() => _TextFormFieldRewriteState();
+}
+
+ 
+
+class _TextFormFieldRewriteState extends State<TextFormFieldRewrite> {
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -22,10 +33,10 @@ class TextFormFieldRewrite extends StatelessWidget {
           return null;
         },
         cursorColor: Colors.blue,
-        controller: controller,
+        controller: widget.controller,
         style: const TextStyle(color: Colors.black),
         decoration: InputDecoration(
-            hintText: hintText,
+            hintText: widget.hintText,
             border:
                 OutlineInputBorder(borderRadius: BorderRadius.circular(22))),
       ),

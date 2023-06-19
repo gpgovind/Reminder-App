@@ -139,11 +139,11 @@ class MedCompletedAdapter extends TypeAdapter<MedCompleted> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return MedCompleted(
-      fields[0] as String,
-      fields[1] as String,
-      fields[2] as String,
-      fields[3] as String,
-      fields[4] as DateTime,
+      medicinename: fields[0] as String,
+      reason: fields[1] as String,
+      category: fields[2] as String,
+      medTime: fields[3] as String,
+      date: fields[4] as DateTime,
     );
   }
 

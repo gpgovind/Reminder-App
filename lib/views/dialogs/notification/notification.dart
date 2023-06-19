@@ -1,24 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:flutter_flushbar/flutter_flushbar.dart';
+import 'package:water_reminder/provider/medicine_provider.dart';
+import 'package:water_reminder/provider/water_provider.dart';
 
-import '../../../models/hive_services/data_functions.dart';
 import '../../../models/hive_services/data_model.dart';
 import '../../widgets/number picker/drink_numberpicker.dart';
 import '../../widgets/number picker/numberpicker.dart';
-import '../../widgets/water screen data/grap_notifier_function.dart';
 
-showAlert(
-  BuildContext context,
-  int index,
-) {
+showAlert(BuildContext context, int index, List<Drinkbox> data1) {
   QuickAlert.show(
       context: context,
       type: QuickAlertType.confirm,
       title: 'Are you sure you want to delete',
-      onConfirmBtnTap: () async {
-        await MedicinesAdd.getdata().deleteAt(index);
+      onConfirmBtnTap: () {
+        context.read<WaterProvider>().deleteWater(index,data1);
+        Navigator.pop(context);
+      });
+}
+showMedAlert(BuildContext context, int index, List<MedicinesAdd> data1) {
+  QuickAlert.show(
+      context: context,
+      type: QuickAlertType.confirm,
+      title: 'Are you sure you want to delete',
+      onConfirmBtnTap: () {
+        context.read<MedicineProvider>(). deleteMedicine(index,data1);
+        Navigator.pop(context);
       });
 }
 
@@ -38,25 +47,24 @@ waterAddShow(BuildContext context) {
     customAsset: 'lib/assets/images/output-onlinegiftools(2).gif',
     animType: QuickAlertAnimType.slideInDown,
     widget: const AddWaterNUmberPicker(),
-    onConfirmBtnTap: () async {
-      if (waterAdd.value == 0) {
+    onConfirmBtnTap: () {
+      if (context.read<WaterProvider>().waterValue == 0) {
         zeroNotAllowedAlert(context);
       } else {
-        await addWater();
-        grap(Drinkbox.getdata(), DateTime.now());
-        // ignore: use_build_context_synchronously
+        context.read<WaterProvider>().addWater();
+        context.read<WaterProvider>().grap();
         Navigator.pop(context);
       }
     },
     context: context,
     type: QuickAlertType.confirm,
     title: '',
-   
   );
 }
 
 void showFlushBar(BuildContext context) {
   Flushbar(
+    messageColor: Colors.black,
     animationDuration: const Duration(milliseconds: 900),
     icon: const Icon(Icons.check_circle, color: Colors.white),
     shouldIconPulse: false,
@@ -66,7 +74,7 @@ void showFlushBar(BuildContext context) {
     margin: const EdgeInsets.all(20),
     borderRadius: const BorderRadius.all(Radius.circular(24)),
     backgroundGradient: const LinearGradient(
-        colors: [Color(0xFFF21852), Color(0xFFF39821)],
+        colors: [Color(0xFF62DE64), Color(0xFFEEEDEC)],
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter),
     message: 'Success',

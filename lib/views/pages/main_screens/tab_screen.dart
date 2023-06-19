@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:water_reminder/provider/water_provider.dart';
 import 'package:water_reminder/views/pages/main_screens/home_Screen.dart';
 import 'package:water_reminder/views/pages/main_screens/medicine_Screen.dart';
 
 
-
 class TabScreens extends StatefulWidget {
-  const TabScreens({super.key});
+  const TabScreens({super.key,});
+ 
 
   @override
   State<TabScreens> createState() => _TabScreensState();
 }
 
 class _TabScreensState extends State<TabScreens> {
+
   @override
   Widget build(BuildContext context) {
+   
     return Container(
       decoration: const BoxDecoration(
         // color: Color.fromRGBO(239, 243, 254, 1),

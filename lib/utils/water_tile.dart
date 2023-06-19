@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
+// ignore: must_be_immutable
 class WaterTile extends StatelessWidget {
   String ml;
 
@@ -15,37 +16,44 @@ class WaterTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ListTile(
-          leading: Text(
-            '$ml ml',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 15.sp,
-              // fontWeight: FontWeight.bold
+      padding: const EdgeInsets.all(5.0),
+      child: Stack(
+        children: [
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              '$ml ml',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 15.sp,
+                // fontWeight: FontWeight.bold
+              ),
             ),
           ),
-          trailing: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text(
-                DateFormat("MMMM d").format(date),
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 15.sp,
-                  // fontWeight: FontWeight.bold
-                ),
+          Align(
+            alignment: Alignment.topRight,
+            child: Text(
+              DateFormat("MMMM d").format(date),
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 15.sp,
+                // fontWeight: FontWeight.bold
               ),
-              Text(
-                time,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 15.sp,
-                  // fontWeight: FontWeight.bold
-                ),
-              )
-            ],
+            ),
           ),
-        ));
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Text(
+              time,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 15.sp,
+                // fontWeight: FontWeight.bold
+              ),
+            ),
+          )
+        ],
+      ),
+    );
   }
 }

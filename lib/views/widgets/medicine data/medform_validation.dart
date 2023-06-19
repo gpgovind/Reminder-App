@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:water_reminder/models/hive_services/data_functions.dart';
+import 'package:provider/provider.dart';
+import 'package:water_reminder/provider/medicine_provider.dart';
 import '../../../consts/Textformfield.dart';
 import '../../../consts/timepicker.dart';
 import '../datepicker/data_picker.dart';
@@ -14,6 +15,14 @@ class MedFormShowDialog extends StatefulWidget {
 }
 
 class _MedFormShowDialogState extends State<MedFormShowDialog> {
+  @override
+  void dispose() {
+    medController.dispose();
+    reasonController.dispose();
+    categoryController.dispose();
+    super.dispose();
+  }
+
   final _formKey = GlobalKey<FormState>();
 
   TextEditingController medController = TextEditingController();
@@ -49,9 +58,9 @@ class _MedFormShowDialogState extends State<MedFormShowDialog> {
                       controller: reasonController,
                       hintText: 'enter reason',
                     ),
-                    Row(
+                    const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: const [TimePicker(), Dateselector()],
+                      children: [TimePicker(), Dateselector()],
                     )
                   ],
                 ),
@@ -73,7 +82,7 @@ class _MedFormShowDialogState extends State<MedFormShowDialog> {
 
                       // here we are calling this function to store medicine data into database
 
-                      medAdd(
+                      context.read<MedicineProvider>().medAdd(
                           medController: medController,
                           date: date,
                           medTime: medTime,

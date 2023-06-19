@@ -1,16 +1,12 @@
 import 'dart:developer';
-
 import 'package:blurrycontainer/blurrycontainer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hive_flutter/adapters.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
-import 'package:quickalert/widgets/quickalert_dialog.dart';
-import 'package:water_reminder/views/widgets/about%20onclick/reset.dart';
-import '../../../models/hive_services/data_model.dart';
+import 'package:water_reminder/provider/medicine_provider.dart';
 import '../../dialogs/notification/notification.dart';
-
 
 class MedList extends StatefulWidget {
   const MedList({super.key});
@@ -22,10 +18,10 @@ class MedList extends StatefulWidget {
 class _MedListState extends State<MedList> {
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<Box<MedicinesAdd>>(
-      valueListenable: MedicinesAdd.getdata().listenable(),
-      builder: (context, box, _) {
+    return Consumer<MedicineProvider>(
+      builder: (context, medicineProvider, _) {
         // to convert data to list
+        final box = medicineProvider.box;
         var data = box.values.toList();
         return data.isEmpty
             ? _buildEmptyState()
@@ -34,57 +30,58 @@ class _MedListState extends State<MedList> {
                 itemBuilder: (context, index) {
                   return Column(
                     children: [
-                      Dismissible(
-                        onDismissed: (direction) async {
-                          // Remove the item from the list
-
-                        showAlert(context,index);
+                      GestureDetector(
+                       onLongPressStart: (direction) {
+                          showMedAlert(context, index, data);
+                          context.read<MedicineProvider>().box;
                         },
                         key: UniqueKey(),
                         child: BlurryContainer(
                           width: double.infinity,
                           height: 110.h,
-                          color:Colors.white,
+                          color: Colors.white,
                           elevation: 3,
                           blur: 3,
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Stack(
                               children: <Widget>[
-                             Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    'Medicine: ${data[index].medicinename}',
-                                    style: TextStyle(
-                                      color: Colors.green,
-                                      fontSize: 15.sp,
+                                Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        'Medicine: ${data[index].medicinename}',
+                                        style: TextStyle(
+                                          color: Colors.green,
+                                          fontSize: 15.sp,
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ),
-                                Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Text(
-                                    'Reason: ${data[index].reason}',
-                                    style: TextStyle(
-                                      color: Colors.red,
-                                      fontSize: 15.sp,
+                                    Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Text(
+                                        'Reason: ${data[index].reason}',
+                                        style: TextStyle(
+                                          color: Colors.red,
+                                          fontSize: 15.sp,
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ),
-                                Align(
-                                  alignment: Alignment.bottomLeft,
-                                  child: Text(
-                                    'Category: ${data[index].category}',
-                                    style: TextStyle(
-                                      color: const Color(0xff9b59b6),
-                                      fontSize: 15.sp,
+                                    Align(
+                                      alignment: Alignment.bottomLeft,
+                                      child: Text(
+                                        'Category: ${data[index].category}',
+                                        style: TextStyle(
+                                          color: const Color(0xff9b59b6),
+                                          fontSize: 15.sp,
+                                        ),
+                                      ),
                                     ),
-                                  ),
+                                  ],
                                 ),
-                             ],),
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
@@ -92,8 +89,8 @@ class _MedListState extends State<MedList> {
                                       padding: const EdgeInsets.only(right: 10),
                                       child: Align(
                                         alignment: Alignment.bottomRight,
-                                        child:
-                                            Text(data[index].medTime.toString()),
+                                        child: Text(
+                                            data[index].medTime.toString()),
                                       ),
                                     ),
                                     Align(
@@ -103,37 +100,38 @@ class _MedListState extends State<MedList> {
                                         onChanged: (value) {
                                           if (value!) {
                                             log('chekbox is taped');
-                          
+
                                             QuickAlert.show(
                                               onCancelBtnTap: () {
+                                                data[index].isCompleted = false;
                                                 Navigator.of(context).pop();
-                                                setState(()  {
-                                                  data[index].isCompleted = false;
-                                                });
                                               },
                                               onConfirmBtnTap: () {
+                                                data[index].isCompleted = true;
+                                                // here we are deleting and storing
+                                                // the data when user click on check box
+                                                // it marked has completed medicine
+                                                // and we will delete that data and store to
+                                                // another filed called MedCompleted the reason
+                                                // we are storing the data because we want to
+                                                // show the completed data in history
+                                                context
+                                                    .read<MedicineProvider>()
+                                                    .medCompleted(
+                                                        medicineName:
+                                                            data[index]
+                                                                .medicinename,
+                                                        reason:
+                                                            data[index].reason,
+                                                        category: data[index]
+                                                            .category,
+                                                        medTime:
+                                                            data[index].medTime,
+                                                        medDate:
+                                                            data[index].date);
+
+                                                box.deleteAt(index);
                                                 Navigator.of(context).pop();
-                                                setState(() {
-                                                  data[index].isCompleted = true;
-                                                  // here we are deleting and storing 
-                                                  // the data when user click on check box
-                                                  // it marked has completed medicine 
-                                                  // and we will delete that data and store to
-                                                  // another filed called MedCompleted the reason 
-                                                  // we are storing the data because we want to 
-                                                  // show the completed data in history 
-                                                  MedCompleted med = MedCompleted(
-                                                    data[index].medicinename,
-                                                    data[index].reason,
-                                                    data[index].category,
-                                                    data[index].medTime,
-                                                    data[index].date,
-                                                  );
-                                                  MedCompleted.getdata().add(med);
-                                                  med.save();
-                          
-                                                  box.deleteAt(index);
-                                                });
                                               },
                                               context: context,
                                               type: QuickAlertType.confirm,
@@ -141,9 +139,7 @@ class _MedListState extends State<MedList> {
                                                   'Are you sure you complete Medicine?',
                                             );
                                           } else {
-                                            setState(() {
-                                              data[index].isCompleted = false;
-                                            });
+                                            data[index].isCompleted = false;
                                           }
                                         },
                                       ),

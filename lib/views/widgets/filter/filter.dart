@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 
-import '../../dialogs/notification/notification.dart';
 // ValueNotifier<DateTimeRange?>dateRangeNotifier=ValueNotifier(null);
 
 class Filter extends StatefulWidget {
@@ -13,7 +12,7 @@ class Filter extends StatefulWidget {
   @override
   State<Filter> createState() => _FilterState();
 }
-ValueNotifier<bool> filterH = ValueNotifier(false);
+
 ValueNotifier<DateTimeRange?> dateRangeNotifier = ValueNotifier(null);
 
 class _FilterState extends State<Filter> {
@@ -52,7 +51,7 @@ if (dateRangeNotifier.value != null) {
   @override
   Widget build(BuildContext context) {
     return IconButton(onPressed: (){
-      // _showDateRangePicker();
+       _showDateRangePicker();
    
     },icon: const Icon(Icons.date_range),color: Colors.blue,);
   }

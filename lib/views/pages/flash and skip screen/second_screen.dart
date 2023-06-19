@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-
-
 class SecondSkip extends StatelessWidget {
   const SecondSkip({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-       decoration: const BoxDecoration(
+      decoration: const BoxDecoration(
         // color: Color.fromRGBO(239, 243, 254, 1),
         image: DecorationImage(
             fit: BoxFit.cover,
@@ -62,7 +60,6 @@ class SecondSkip extends StatelessWidget {
                     ],
                   ),
                 ),
-               
               ],
             ),
           ),

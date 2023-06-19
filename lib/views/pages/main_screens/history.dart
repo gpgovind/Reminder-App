@@ -5,12 +5,10 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:intl/intl.dart';
 import 'package:water_reminder/views/pages/main_screens/search.dart';
 import '../../../models/hive_services/data_model.dart';
-import '../../dialogs/notification/notification.dart';
 import '../../widgets/animated icon.dart/animatd_icon1.dart';
 import '../../widgets/filter/filter.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
 
-import '../../widgets/water screen data/pop_up.dart';
 
 class History extends StatefulWidget {
   const History({super.key});
@@ -111,10 +109,7 @@ class _HistoryState extends State<History> {
               ValueListenableBuilder(
                 valueListenable: dateRangeNotifier,
                 builder: (context, dateRange, child) {
-                  return ValueListenableBuilder(
-                    valueListenable: filterH,
-                    builder: (context, value, child) {
-                      return Expanded(
+                  return  Expanded(
                           child: ValueListenableBuilder<Box<Drinkbox>>(
                         valueListenable: Drinkbox.getdata().listenable(),
                         builder: (context, box, _) {
@@ -135,7 +130,7 @@ class _HistoryState extends State<History> {
                           return dataList.isEmpty
                               ? Center(
                                   child: Image.asset(
-                                      'lib/assets/images/no-data.gif'),
+                                      'lib/assets/images/no_data.gif'),
                                 )
                               : ListView.separated(
                                   separatorBuilder: (context, index) =>
@@ -167,16 +162,19 @@ class _HistoryState extends State<History> {
                                                 title: Text(
                                                     ' ${data!.addWater}',
                                                     style: const TextStyle(
+                                                        fontSize: 18,
                                                         color: Colors.white)),
                                                 subtitle: Text(
                                                   ' ${data.time}',
                                                   style: const TextStyle(
+                                                     fontSize: 15,
                                                       color: Colors.white),
                                                 ),
                                                 trailing: Text(
                                                     DateFormat("MMMM d")
                                                         .format(data.date),
                                                     style: const TextStyle(
+                                                        fontSize: 15,
                                                         color: Colors.white)),
                                               )),
                                         ));
@@ -184,8 +182,8 @@ class _HistoryState extends State<History> {
                                 );
                         },
                       ));
-                    },
-                  );
+                    
+                  
                 },
               ),
 
@@ -195,10 +193,7 @@ class _HistoryState extends State<History> {
               ValueListenableBuilder(
                 valueListenable: dateRangeNotifier,
                 builder: (context, dateRange, child) {
-                  return ValueListenableBuilder(
-                    valueListenable: filterH,
-                    builder: (context, value, child) {
-                      return Expanded(
+                  return  Expanded(
                           child: ValueListenableBuilder<Box<MedCompleted>>(
                         valueListenable: MedCompleted.getdata().listenable(),
                         builder: (context, box, _) {
@@ -220,7 +215,7 @@ class _HistoryState extends State<History> {
                           return dataList.isEmpty
                               ? Center(
                                   child: Image.asset(
-                                      'lib/assets/images/no-data.gif'),
+                                      'lib/assets/images/no_data.gif'),
                                 )
                               : ListView.separated(
                                   separatorBuilder: (context, index) =>
@@ -249,10 +244,12 @@ class _HistoryState extends State<History> {
                                               title: Text(
                                                   'Medicine: ${data!.medicinename}',
                                                   style: const TextStyle(
+                                                      fontSize: 18,
                                                       color: Colors.white)),
                                               subtitle: Text(
                                                   'Reason: ${data.reason}',
                                                   style: const TextStyle(
+                                                      fontSize: 18,
                                                       color: Colors.white)),
                                               trailing: Column(
                                                 mainAxisAlignment:
@@ -261,11 +258,13 @@ class _HistoryState extends State<History> {
                                                 children: [
                                                   Text(data.medTime.toString(),
                                                       style: const TextStyle(
+                                                        fontSize: 15,
                                                           color: Colors.white)),
                                                   Text(
                                                       DateFormat("MMMM d")
                                                           .format(data.date),
                                                       style: const TextStyle(
+                                                          fontSize: 15,
                                                           color: Colors.white)),
                                                 ],
                                               ),
@@ -274,8 +273,7 @@ class _HistoryState extends State<History> {
                                 );
                         },
                       ));
-                    },
-                  );
+                   
                 },
               ),
 
@@ -285,10 +283,7 @@ class _HistoryState extends State<History> {
               ValueListenableBuilder(
                 valueListenable: dateRangeNotifier,
                 builder: (context, dateRange, child) {
-                  return ValueListenableBuilder(
-                    valueListenable: filterH,
-                    builder: (context, value, child) {
-                      return Expanded(
+                  return Expanded(
                           child: ValueListenableBuilder<Box<MedicinesAdd>>(
                         valueListenable: MedicinesAdd.getdata().listenable(),
                         builder: (context, box, _) {
@@ -310,7 +305,7 @@ class _HistoryState extends State<History> {
                           return dataList.isEmpty
                               ? Center(
                                   child: Image.asset(
-                                      'lib/assets/images/no-data.gif'),
+                                      'lib/assets/images/no_data.gif'),
                                 )
                               : ListView.separated(
                                   separatorBuilder: (context, index) =>
@@ -340,11 +335,13 @@ class _HistoryState extends State<History> {
                                                 title: Text(
                                                   'Medicine: ${data!.medicinename}',
                                                   style: const TextStyle(
+                                                     fontSize: 18,
                                                       color: Colors.white),
                                                 ),
                                                 subtitle: Text(
                                                     'Reason: ${data.reason}',
                                                     style: const TextStyle(
+                                                       fontSize: 18,
                                                         color: Colors.white)),
                                                 trailing: Column(
                                                   mainAxisAlignment:
@@ -354,12 +351,14 @@ class _HistoryState extends State<History> {
                                                     Text(
                                                         data.medTime.toString(),
                                                         style: const TextStyle(
+                                                           fontSize: 15,
                                                             color:
                                                                 Colors.white)),
                                                     Text(
                                                         DateFormat("MMMM d")
                                                             .format(data.date),
                                                         style: const TextStyle(
+                                                           fontSize: 15,
                                                             color:
                                                                 Colors.white)),
                                                   ],
@@ -370,8 +369,7 @@ class _HistoryState extends State<History> {
                                 );
                         },
                       ));
-                    },
-                  );
+                  
                 },
               )
           ]),
